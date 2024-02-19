@@ -30,7 +30,7 @@ public class UsersController {
 
 
     @GetMapping
-    public Page<User> getAllUsers(@RequestParam(defaultValue = "0") int page,
+    public Page<User> getAllUsers(@RequestParam(defaultValue = "1") int page,
                                   @RequestParam(defaultValue = "10") int size,
                                   @RequestParam(defaultValue = "id") String orderBy
     ) {
