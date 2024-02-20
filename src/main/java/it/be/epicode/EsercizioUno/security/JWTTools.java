@@ -2,6 +2,7 @@ package it.be.epicode.EsercizioUno.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import it.be.epicode.EsercizioUno.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import it.be.epicode.EsercizioUno.entities.User;
@@ -23,4 +24,19 @@ public class JWTTools {
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes())) // Firmo il token
                 .compact();
     }
+
+    public void verifyToken(String token) { // Dato un token mi lancia eccezioni in caso di token manipolato o scaduto
+        try {
+            Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parse(token);
+        } catch (Exception ex) {
+            throw new UnauthorizedException("Problemi col token! Effettua di nuovo il login!");
+        }
     }
+
+    public String extractIdFromToken(String token) {
+        return Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .build().parseSignedClaims(token).getPayload()
+                .getSubject(); // Il subject è l'id dell'utente
+    }
+
+}
